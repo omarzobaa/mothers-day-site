@@ -1,259 +1,966 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Tribute to Excellence</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@200;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #1a1a1a;
-            --primary-gold: #d4af37;
-            --soft-rose: #ffd1dc;
-            --glass: rgba(255, 255, 255, 0.08);
-            --border: rgba(255, 255, 255, 0.15);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>With Love & Appreciation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: none; /* We're building a custom cursor */
-        }
+  <style>
+    :root{
+      --bg1:#ffafbd;
+      --bg2:#ffc3a0;
+      --bg3:#ffd6e7;
+      --glass:rgba(255,255,255,0.16);
+      --glass-strong:rgba(255,255,255,0.24);
+      --white:#ffffff;
+      --text:#4d4350;
+      --gold:#d4af37;
+      --shadow:0 20px 60px rgba(0,0,0,0.12);
+      --shadow-soft:0 12px 30px rgba(0,0,0,0.08);
+      --border:1px solid rgba(255,255,255,0.34);
+    }
 
-        body {
-            background: radial-gradient(circle at center, #2d1b22 0%, #0f0f0f 100%);
-            color: #fff;
-            font-family: 'Montserrat', sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
 
-        #canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
+    html{
+      scroll-behavior:smooth;
+    }
 
-        /* Custom Interactive Cursor */
-        #cursor {
-            width: 20px;
-            height: 20px;
-            background: var(--primary-gold);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            transition: transform 0.1s ease;
-        }
+    body{
+      font-family:'Montserrat',sans-serif;
+      color:var(--text);
+      background:linear-gradient(-45deg,var(--bg1),var(--bg2),#ffd1dc,#ffdce9);
+      background-size:400% 400%;
+      animation:bgShift 18s ease infinite;
+      overflow-x:hidden;
+      min-height:100vh;
+      position:relative;
+    }
 
-        .main-container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            width: 85%;
-            max-width: 800px;
-            padding: 60px;
-            background: var(--glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--border);
-            border-radius: 40px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-            transform: scale(0.9);
-            opacity: 0;
-            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-        }
+    @keyframes bgShift{
+      0%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+      100%{background-position:0% 50%;}
+    }
 
-        .main-container.active {
-            transform: scale(1);
-            opacity: 1;
-        }
+    canvas#sky{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+      pointer-events:none;
+    }
 
-        h1 {
-            font-family: 'Great Vibes', cursive;
-            font-size: 5rem;
-            background: linear-gradient(to right, #fff, var(--primary-gold), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
+    .blob{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(40px);
+      opacity:.38;
+      pointer-events:none;
+      z-index:0;
+      animation:floatBlob 16s ease-in-out infinite;
+    }
 
-        #message-sequence {
-            font-family: 'Bodoni Moda', serif;
-            font-size: 1.8rem;
-            font-style: italic;
-            height: 80px;
-            margin: 40px 0;
-            color: var(--soft-rose);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.8s ease;
-        }
+    .blob.one{
+      width:320px;
+      height:320px;
+      background:#fff0f6;
+      top:5%;
+      left:-80px;
+    }
 
-        .btn-start {
-            margin-top: 30px;
-            padding: 15px 40px;
-            background: transparent;
-            border: 1px solid var(--primary-gold);
-            color: var(--primary-gold);
-            font-family: 'Montserrat', sans-serif;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-weight: 600;
-            border-radius: 100px;
-            transition: 0.4s;
-        }
+    .blob.two{
+      width:280px;
+      height:280px;
+      background:#ffe7c7;
+      right:-60px;
+      top:22%;
+      animation-delay:-5s;
+    }
 
-        .btn-start:hover {
-            background: var(--primary-gold);
-            color: #000;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
-        }
+    .blob.three{
+      width:360px;
+      height:360px;
+      background:#ffd4ef;
+      bottom:-90px;
+      left:20%;
+      animation-delay:-10s;
+    }
 
-        .footer-note {
-            position: absolute;
-            bottom: 20px;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            opacity: 0.4;
-            text-transform: uppercase;
-        }
+    @keyframes floatBlob{
+      0%,100%{transform:translateY(0) translateX(0) scale(1);}
+      25%{transform:translateY(-20px) translateX(10px) scale(1.05);}
+      50%{transform:translateY(20px) translateX(-10px) scale(.98);}
+      75%{transform:translateY(-12px) translateX(18px) scale(1.03);}
+    }
 
-        /* Responsive Mobile Tweak */
-        @media (max-width: 600px) {
-            h1 { font-size: 3rem; }
-            .main-container { padding: 30px; }
-            #message-sequence { font-size: 1.2rem; }
-        }
-    </style>
+    .page{
+      position:relative;
+      z-index:2;
+      width:min(1180px,92%);
+      margin:0 auto;
+      padding-bottom:80px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:center;
+      padding-top:24px;
+      margin-bottom:18px;
+    }
+
+    .pill{
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      background:rgba(255,255,255,0.18);
+      border:var(--border);
+      color:#fff;
+      box-shadow:var(--shadow-soft);
+      border-radius:999px;
+      padding:10px 18px;
+      font-size:.9rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .hero{
+      min-height:92vh;
+      display:grid;
+      place-items:center;
+      padding:40px 0 80px;
+      text-align:center;
+    }
+
+    .hero-card{
+      width:min(900px,100%);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      background:linear-gradient(180deg,rgba(255,255,255,0.20),rgba(255,255,255,0.12));
+      border:var(--border);
+      border-radius:34px;
+      padding:48px 30px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-radius:34px;
+      padding:1px;
+      background:linear-gradient(135deg,rgba(255,255,255,.65),rgba(255,255,255,.1));
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite:xor;
+              mask-composite:exclude;
+      pointer-events:none;
+    }
+
+    .hero-card::after{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.45),transparent 68%);
+      top:-80px;
+      right:-80px;
+      pointer-events:none;
+    }
+
+    .script-title{
+      font-family:'Great Vibes',cursive;
+      font-size:clamp(3.2rem,7vw,6.4rem);
+      color:#fff;
+      line-height:1;
+      text-shadow:0 10px 30px rgba(255,255,255,.18);
+      margin-bottom:12px;
+    }
+
+    .subtitle{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(1.05rem,2.2vw,1.5rem);
+      color:rgba(255,255,255,.96);
+      margin-bottom:18px;
+      min-height:2.2em;
+    }
+
+    .divider{
+      width:90px;
+      height:2px;
+      margin:18px auto 24px;
+      border-radius:999px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent);
+    }
+
+    .lead{
+      max-width:700px;
+      margin:0 auto;
+      font-size:1.08rem;
+      line-height:1.95;
+      font-weight:400;
+      color:#5b4f59;
+    }
+
+    .hero-actions{
+      display:flex;
+      justify-content:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:30px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:14px 24px;
+      font-size:1rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:.3s ease;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .btn-primary{
+      background:#fff;
+      color:#e57ba0;
+      box-shadow:0 14px 30px rgba(255,255,255,.24);
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,.14);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.34);
+      backdrop-filter:blur(8px);
+    }
+
+    .btn:hover{
+      transform:translateY(-3px) scale(1.02);
+    }
+
+    .btn-shimmer::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:-120%;
+      width:60%;
+      height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+      transform:skewX(-20deg);
+      transition:.8s;
+    }
+
+    .btn-shimmer:hover::before{
+      left:130%;
+    }
+
+    section{
+      margin-top:34px;
+    }
+
+    .section-card{
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      background:var(--glass);
+      border:var(--border);
+      border-radius:30px;
+      padding:34px 24px;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .section-head{
+      text-align:center;
+      margin-bottom:22px;
+    }
+
+    .eyebrow{
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      font-size:.75rem;
+      color:rgba(255,255,255,.9);
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .section-title{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(1.9rem,4vw,3rem);
+      color:#fff;
+      margin-bottom:10px;
+    }
+
+    .section-copy{
+      max-width:760px;
+      margin:0 auto;
+      line-height:1.85;
+      color:#5a4e57;
+      font-size:1rem;
+    }
+
+    .grid{
+      display:grid;
+      gap:18px;
+    }
+
+    .qualities{
+      grid-template-columns:repeat(4,1fr);
+      margin-top:28px;
+    }
+
+    .quality{
+      background:rgba(255,255,255,.16);
+      border:var(--border);
+      border-radius:24px;
+      padding:22px 18px;
+      text-align:center;
+      transition:.35s ease;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .quality:hover{
+      transform:translateY(-6px);
+      background:rgba(255,255,255,.24);
+    }
+
+    .quality .icon{
+      font-size:1.7rem;
+      margin-bottom:10px;
+    }
+
+    .quality h3{
+      font-size:1.05rem;
+      margin-bottom:8px;
+      color:#fff;
+    }
+
+    .quality p{
+      font-size:.95rem;
+      line-height:1.65;
+      color:#5d5260;
+    }
+
+    .reasons{
+      grid-template-columns:repeat(2,1fr);
+      margin-top:26px;
+    }
+
+    .reason{
+      position:relative;
+      padding:22px 20px 22px 72px;
+      border-radius:24px;
+      background:rgba(255,255,255,.17);
+      border:var(--border);
+      transition:.3s ease;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .reason:hover{
+      transform:translateY(-5px) scale(1.01);
+      background:rgba(255,255,255,.24);
+    }
+
+    .reason .num{
+      position:absolute;
+      left:18px;
+      top:18px;
+      width:40px;
+      height:40px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      background:rgba(255,255,255,.84);
+      color:#d87b9b;
+      font-weight:800;
+      box-shadow:0 10px 18px rgba(255,255,255,.24);
+    }
+
+    .reason h4{
+      font-size:1.05rem;
+      color:#fff;
+      margin-bottom:8px;
+    }
+
+    .reason p{
+      line-height:1.7;
+      color:#5c505a;
+      font-size:.96rem;
+    }
+
+    .spotlight{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:20px;
+      align-items:stretch;
+    }
+
+    .letter-box, .quote-box{
+      background:rgba(255,255,255,.16);
+      border:var(--border);
+      border-radius:28px;
+      padding:26px;
+      box-shadow:var(--shadow-soft);
+      min-height:100%;
+    }
+
+    .letter-box h3,
+    .quote-box h3{
+      font-family:'Playfair Display',serif;
+      font-size:1.7rem;
+      color:#fff;
+      margin-bottom:12px;
+    }
+
+    .letter-preview{
+      line-height:1.85;
+      color:#5c505a;
+      margin-bottom:18px;
+    }
+
+    .hidden-letter{
+      max-height:0;
+      overflow:hidden;
+      opacity:0;
+      transition:max-height .8s ease, opacity .8s ease, transform .8s ease;
+      transform:translateY(10px);
+    }
+
+    .hidden-letter.open{
+      max-height:700px;
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .letter-content{
+      background:rgba(255,255,255,.22);
+      border:var(--border);
+      border-radius:22px;
+      padding:22px;
+      line-height:1.95;
+      color:#564955;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.22);
+    }
+
+    .signature{
+      font-family:'Great Vibes',cursive;
+      color:#fff;
+      font-size:2.2rem;
+      margin-top:14px;
+    }
+
+    .quote-rotator{
+      min-height:170px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      background:rgba(255,255,255,.14);
+      border-radius:24px;
+      padding:20px;
+      border:var(--border);
+    }
+
+    .quote-text{
+      font-family:'Playfair Display',serif;
+      font-size:1.35rem;
+      line-height:1.7;
+      color:#fff;
+      opacity:1;
+      transition:opacity .45s ease, transform .45s ease;
+    }
+
+    .quote-meta{
+      margin-top:16px;
+      font-size:.92rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#6b5a67;
+      text-align:center;
+    }
+
+    .gratitude-line{
+      margin-top:20px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      justify-content:center;
+    }
+
+    .tag{
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,.18);
+      border:var(--border);
+      color:#fff;
+      font-weight:600;
+      font-size:.92rem;
+      box-shadow:var(--shadow-soft);
+      transition:.25s ease;
+    }
+
+    .tag:hover{
+      transform:translateY(-3px);
+      background:rgba(255,255,255,.24);
+    }
+
+    .finale{
+      text-align:center;
+      padding:42px 22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .finale h2{
+      font-family:'Playfair Display',serif;
+      color:#fff;
+      font-size:clamp(2rem,4vw,3.2rem);
+      margin-bottom:12px;
+    }
+
+    .finale p{
+      max-width:700px;
+      margin:0 auto 22px;
+      line-height:1.9;
+      color:#5a4c57;
+    }
+
+    .glow-ring{
+      position:absolute;
+      inset:auto 50% -120px auto;
+      transform:translateX(50%);
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.30),transparent 68%);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(24px);
+      transition:opacity .8s ease, transform .8s ease;
+    }
+
+    .reveal.show{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .floating-heart{
+      position:fixed;
+      left:0;
+      top:0;
+      pointer-events:none;
+      z-index:20;
+      font-size:20px;
+      animation:riseHeart 2.6s ease forwards;
+      filter:drop-shadow(0 8px 18px rgba(255,255,255,.35));
+    }
+
+    @keyframes riseHeart{
+      0%{
+        opacity:0;
+        transform:translate(-50%,-50%) scale(.3);
+      }
+      10%{
+        opacity:1;
+      }
+      100%{
+        opacity:0;
+        transform:translate(var(--x),-180px) scale(1.5) rotate(16deg);
+      }
+    }
+
+    footer{
+      text-align:center;
+      padding-top:18px;
+      color:rgba(255,255,255,.9);
+      font-size:.92rem;
+    }
+
+    @media (max-width: 980px){
+      .qualities{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .spotlight{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 680px){
+      .hero-card{
+        padding:34px 18px;
+        border-radius:28px;
+      }
+
+      .reasons,
+      .qualities{
+        grid-template-columns:1fr;
+      }
+
+      .section-card{
+        padding:28px 18px;
+      }
+
+      .subtitle{
+        min-height:3.2em;
+      }
+
+      .lead{
+        font-size:1rem;
+      }
+
+      .btn{
+        width:100%;
+      }
+
+      .hero-actions{
+        flex-direction:column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="cursor"></div>
-    <canvas id="canvas"></canvas>
+  <canvas id="sky"></canvas>
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+  <div class="blob three"></div>
 
-    <div class="main-container" id="card">
-        <h1>For You</h1>
-        <div id="message-sequence">Click the button to begin...</div>
-        <button class="btn-start" onclick="startExperience()">Begin Journey</button>
+  <div class="page">
+    <div class="topbar reveal">
+      <div class="pill">A Small Website, Made With Love</div>
     </div>
 
-    <div class="footer-note">Unmatched Grace • Unending Strength</div>
+    <header class="hero">
+      <div class="hero-card reveal">
+        <h1 class="script-title">Happy Mother’s Day</h1>
+        <div class="subtitle" id="rotatingSubtitle">For every quiet sacrifice, every long day, and every act of love.</div>
+        <div class="divider"></div>
+        <p class="lead">
+          There are some people whose effort becomes the foundation of everything around them.  
+          This is a small way of saying that your patience, your strength, your heart, and your hard work never go unnoticed.
+        </p>
 
-    <script>
-        const cursor = document.getElementById('cursor');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const card = document.getElementById('card');
-        const msgElement = document.getElementById('message-sequence');
-        
-        let petals = [];
-        let interactionStarted = false;
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-shimmer" onclick="document.getElementById('appreciation').scrollIntoView({behavior:'smooth'})">
+            Start the Surprise
+          </button>
+          <button class="btn btn-secondary" onclick="heartStorm(24)">
+            Send Some Love
+          </button>
+        </div>
+      </div>
+    </header>
 
-        // Custom Cursor Logic
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+    <section id="appreciation" class="section-card reveal">
+      <div class="section-head">
+        <div class="eyebrow">With Appreciation</div>
+        <h2 class="section-title">For All the Things Words Struggle to Hold</h2>
+        <p class="section-copy">
+          Some kindness is so constant that people start to forget how extraordinary it really is.
+          This is a reminder that the care, energy, and love you pour into everything matters more than can be measured.
+        </p>
+      </div>
+
+      <div class="grid qualities">
+        <div class="quality">
+          <div class="icon">🌸</div>
+          <h3>Grace</h3>
+          <p>You carry so much with a quiet elegance that deserves to be recognized and admired.</p>
+        </div>
+        <div class="quality">
+          <div class="icon">💗</div>
+          <h3>Heart</h3>
+          <p>The warmth you give to others has a way of making everything feel more secure and more bright.</p>
+        </div>
+        <div class="quality">
+          <div class="icon">✨</div>
+          <h3>Strength</h3>
+          <p>Your resilience shows up in ways both big and small, and it leaves a lasting mark on everyone around you.</p>
+        </div>
+        <div class="quality">
+          <div class="icon">🌷</div>
+          <h3>Care</h3>
+          <p>The little things you do every day add up to something beautiful, generous, and unforgettable.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card reveal">
+      <div class="section-head">
+        <div class="eyebrow">Ten Little Truths</div>
+        <h2 class="section-title">10 Reasons You Are Appreciated</h2>
+        <p class="section-copy">
+          Not because of one moment, but because of a thousand moments that reflect your love, your effort, and your presence.
+        </p>
+      </div>
+
+      <div class="grid reasons">
+        <div class="reason"><div class="num">1</div><h4>You show up</h4><p>Again and again, in ways that are steady, dependable, and deeply meaningful.</p></div>
+        <div class="reason"><div class="num">2</div><h4>You work hard</h4><p>The effort you give deserves more praise than it probably gets, and it never blends into the background.</p></div>
+        <div class="reason"><div class="num">3</div><h4>You give comfort</h4><p>Your presence has a way of making things feel lighter, calmer, and more manageable.</p></div>
+        <div class="reason"><div class="num">4</div><h4>You stay strong</h4><p>Even on difficult days, your strength creates stability and reassurance for the people around you.</p></div>
+        <div class="reason"><div class="num">5</div><h4>You are patient</h4><p>The kindness behind your patience is something people feel even when it is not spoken aloud.</p></div>
+        <div class="reason"><div class="num">6</div><h4>You inspire gratitude</h4><p>Your actions have a quiet impact that leaves people more thankful than they may always remember to say.</p></div>
+        <div class="reason"><div class="num">7</div><h4>You make things beautiful</h4><p>Not just through what you do, but through the atmosphere of care and warmth you create.</p></div>
+        <div class="reason"><div class="num">8</div><h4>You carry love in everything</h4><p>Even the smallest act can reveal how much heart you put into the people you care about.</p></div>
+        <div class="reason"><div class="num">9</div><h4>You are unforgettable</h4><p>Because true love, effort, and sincerity never disappear into the ordinary.</p></div>
+        <div class="reason"><div class="num">10</div><h4>You matter deeply</h4><p>Today is simply a reminder of something true every day: you are appreciated more than words can say.</p></div>
+      </div>
+    </section>
+
+    <section class="section-card reveal">
+      <div class="spotlight">
+        <div class="letter-box">
+          <h3>A Letter of Appreciation</h3>
+          <p class="letter-preview">
+            Some feelings deserve more than a single line on a page.  
+            Tap below to open a longer message.
+          </p>
+          <button class="btn btn-primary btn-shimmer" onclick="toggleLetter()">Open the Letter</button>
+
+          <div class="hidden-letter" id="hiddenLetter">
+            <div class="letter-content" style="margin-top:20px;">
+              Thank you for all the love that lives inside the things you do every day.  
+              Thank you for the effort that often happens quietly, without applause, and still changes everything around you.<br><br>
+
+              Thank you for the patience, the sacrifices, the kindness, and the strength that make such a difference.  
+              Even when the world moves quickly, the care you give still stands out in a way that is impossible to miss.<br><br>
+
+              Today is a celebration of your heart, your hard work, and the way you make life brighter simply by being who you are.  
+              You are valued, admired, and appreciated more than can be fully captured in words.
+              <div class="signature">With all my love</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote-box">
+          <h3>Always True</h3>
+          <div class="quote-rotator">
+            <div class="quote-text" id="quoteText">“Some people make love feel visible in everything they do.”</div>
+          </div>
+          <div class="quote-meta">A reminder worth keeping</div>
+
+          <div class="gratitude-line">
+            <div class="tag">Love</div>
+            <div class="tag">Strength</div>
+            <div class="tag">Patience</div>
+            <div class="tag">Warmth</div>
+            <div class="tag">Grace</div>
+            <div class="tag">Devotion</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card reveal finale">
+      <div class="glow-ring"></div>
+      <div class="section-head" style="position:relative; z-index:1;">
+        <div class="eyebrow">Final Thought</div>
+        <h2>Today Is About Celebrating You</h2>
+        <p>
+          For every visible effort and every invisible one.  
+          For every time you carried more than anyone knew.  
+          For every moment of care, love, and strength that helped shape the world around you.
+        </p>
+        <button class="btn btn-primary btn-shimmer" onclick="grandFinale()">Make It Sparkle</button>
+      </div>
+    </section>
+
+    <footer class="reveal">
+      Made with love, gratitude, and a whole lot of appreciation.
+    </footer>
+  </div>
+
+  <script>
+    const subtitleLines = [
+      "For every quiet sacrifice, every long day, and every act of love.",
+      "For the strength that carries so much, even when no one sees it.",
+      "For the kindness, patience, and care that shape everything around you.",
+      "For a heart that gives more than words could ever fully thank."
+    ];
+
+    let subIndex = 0;
+    const rotatingSubtitle = document.getElementById("rotatingSubtitle");
+
+    setInterval(() => {
+      rotatingSubtitle.style.opacity = 0;
+      rotatingSubtitle.style.transform = "translateY(8px)";
+      setTimeout(() => {
+        subIndex = (subIndex + 1) % subtitleLines.length;
+        rotatingSubtitle.textContent = subtitleLines[subIndex];
+        rotatingSubtitle.style.opacity = 1;
+        rotatingSubtitle.style.transform = "translateY(0)";
+      }, 320);
+    }, 3200);
+
+    const quotes = [
+      "“Some people make love feel visible in everything they do.”",
+      "“The hardest work is often the quietest, and still the most beautiful.”",
+      "“Care has a way of leaving light wherever it goes.”",
+      "“Strength wrapped in kindness is one of the most powerful things in the world.”",
+      "“To be deeply appreciated is to be truly seen.”"
+    ];
+
+    let quoteIndex = 0;
+    const quoteText = document.getElementById("quoteText");
+
+    setInterval(() => {
+      quoteText.style.opacity = 0;
+      quoteText.style.transform = "translateY(12px)";
+      setTimeout(() => {
+        quoteIndex = (quoteIndex + 1) % quotes.length;
+        quoteText.textContent = quotes[quoteIndex];
+        quoteText.style.opacity = 1;
+        quoteText.style.transform = "translateY(0)";
+      }, 300);
+    }, 3600);
+
+    function toggleLetter(){
+      const letter = document.getElementById("hiddenLetter");
+      letter.classList.toggle("open");
+      heartStorm(12);
+    }
+
+    function createHeart(x, y){
+      const heart = document.createElement("div");
+      heart.className = "floating-heart";
+      heart.textContent = Math.random() > 0.5 ? "❤" : "✨";
+      heart.style.left = x + "px";
+      heart.style.top = y + "px";
+      heart.style.setProperty("--x", `${(Math.random() - 0.5) * 120}px`);
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 2600);
+    }
+
+    function heartStorm(count = 20){
+      for(let i = 0; i < count; i++){
+        setTimeout(() => {
+          const x = window.innerWidth * (0.2 + Math.random() * 0.6);
+          const y = window.innerHeight * (0.55 + Math.random() * 0.25);
+          createHeart(x, y);
+        }, i * 70);
+      }
+    }
+
+    function grandFinale(){
+      heartStorm(40);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add("show");
+        }
+      });
+    }, { threshold: 0.16 });
+
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+    const canvas = document.getElementById("sky");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+
+    function resizeCanvas(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    class Particle{
+      constructor(){
+        this.reset();
+      }
+
+      reset(){
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.8 + 0.6;
+        this.speedY = Math.random() * 0.35 + 0.08;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.55 + 0.15;
+        this.type = Math.random() > 0.88 ? "heart" : "dot";
+      }
+
+      update(){
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        if(this.y < -20 || this.x < -20 || this.x > canvas.width + 20){
+          this.x = Math.random() * canvas.width;
+          this.y = canvas.height + 10;
+        }
+      }
+
+      draw(){
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+
+        if(this.type === "heart"){
+          ctx.translate(this.x, this.y);
+          ctx.fillStyle = "#ffffff";
+          const s = this.size * 3.2;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.bezierCurveTo(-s/2, -s/2, -s, s/3, 0, s);
+          ctx.bezierCurveTo(s, s/3, s/2, -s/2, 0, 0);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.fillStyle = "rgba(255,255,255,0.95)";
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+    }
+
+    function initParticles(){
+      particles = [];
+      const count = Math.min(120, Math.floor((window.innerWidth * window.innerHeight) / 14000));
+      for(let i = 0; i < count; i++){
+        particles.push(new Particle());
+      }
+    }
+
+    function animate(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      initParticles();
+    });
+
+    resizeCanvas();
+    initParticles();
+    animate();
+
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        document.querySelectorAll(".reveal").forEach((el, i) => {
+          setTimeout(() => el.classList.add("show"), i * 90);
         });
-
-        // 10-Point Sequence
-        const tributes = [
-            "Today is a celebration of you.",
-            "Of your quiet strength and resilience.",
-            "Of the hard work that often goes unseen.",
-            "Of the kindness that heals everything it touches.",
-            "The way you handle the world is breathtaking.",
-            "You are the anchor in every storm.",
-            "The standard for grace and character.",
-            "Thank you for simply being who you are.",
-            "The world is brighter because you're in it.",
-            "Happy Mother's Day, to the very best."
-        ];
-
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Petal {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = -20;
-                this.size = Math.random() * 5 + 2;
-                this.speed = Math.random() * 1.5 + 0.5;
-                this.angle = Math.random() * 360;
-                this.spin = Math.random() * 0.02 * (Math.random() > 0.5 ? 1 : -1);
-            }
-            update() {
-                this.y += this.speed;
-                this.angle += this.spin;
-                this.x += Math.sin(this.angle) * 0.5;
-                if (this.y > canvas.height) this.reset();
-            }
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.angle);
-                ctx.fillStyle = interactionStarted ? "#d4af37" : "#ffd1dc";
-                ctx.globalAlpha = 0.6;
-                ctx.beginPath();
-                ctx.ellipse(0, 0, this.size, this.size * 1.5, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-        }
-
-        function init() {
-            for (let i = 0; i < 70; i++) petals.push(new Petal());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            petals.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animate);
-        }
-
-        async function startExperience() {
-            interactionStarted = true;
-            const btn = document.querySelector('.btn-start');
-            btn.style.display = 'none';
-
-            for (let text of tributes) {
-                msgElement.style.opacity = 0;
-                await new Promise(r => setTimeout(r, 800));
-                msgElement.innerText = text;
-                msgElement.style.opacity = 1;
-                await new Promise(r => setTimeout(r, 3000));
-            }
-
-            // Finale
-            msgElement.innerHTML = "<span style='color:white; font-weight:bold;'>I Appreciate Everything.</span>";
-            card.style.borderColor = "var(--primary-gold)";
-            card.style.boxShadow = "0 0 50px rgba(212, 175, 55, 0.2)";
-        }
-
-        window.onload = () => {
-            init();
-            animate();
-            setTimeout(() => card.classList.add('active'), 500);
-        };
-    </script>
+      }, 120);
+    });
+  </script>
 </body>
 </html>
