@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>With Appreciation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ffafbd;
+            --secondary-pink: #ffc3a0;
+            --accent-gold: #d4af37;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --text-color: #4a4a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--secondary-pink) 100%);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            perspective: 1000px;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .container.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: S(4.5rem);
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-color);
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .divider {
+            width: 80px;
+            height: 2px;
+            background: white;
+            margin: 0 auto 30px;
+            border-radius: 2px;
+            opacity: 0.6;
+        }
+
+        .message {
+            font-style: italic;
+            font-size: 1.4rem;
+            color: #fff;
+            opacity: 0.9;
+        }
+
+        .btn-reveal {
+            padding: 12px 35px;
+            background: white;
+            color: var(--primary-pink);
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .btn-reveal:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 3rem; }
+            .container { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="container" id="mainCard">
+        <h1>Happy Mother's Day</h1>
+        <div class="divider"></div>
+        <p id="mainText">
+            I wanted to take a moment to say how much I appreciate everything you do. 
+            Your hard work, your strength, and your kindness never go unnoticed.
+        </p>
+        <p class="message">
+            Thank you for being exactly who you are.
+        </p>
+        <button class="btn-reveal" onclick="triggerImmersion()">With All My Love</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let hearts = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Heart {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 15 + 10;
+                this.speed = Math.random() * 2 + 1;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.swing = Math.random() * 2;
+                this.swingSpeed = Math.random() * 0.02;
+                this.t = 0;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = "#fff";
+                ctx.translate(this.x + Math.sin(this.t) * this.swing * 10, this.y);
+                
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-this.size / 2, -this.size / 2, -this.size, this.size / 3, 0, this.size);
+                ctx.bezierCurveTo(this.size, this.size / 3, this.size / 2, -this.size / 2, 0, 0);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.t += this.swingSpeed;
+                if (this.y < -50) {
+                    this.reset();
+                }
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < 25; i++) {
+                hearts.push(new Heart());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(heart => {
+                heart.update();
+                heart.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        function triggerImmersion() {
+            // Intense heart burst
+            for (let i = 0; i < 50; i++) {
+                const h = new Heart();
+                h.y = Math.random() * canvas.height;
+                h.speed *= 2;
+                hearts.push(h);
+            }
+            
+            const card = document.getElementById('mainCard');
+            card.style.transform = "scale(1.02)";
+            setTimeout(() => {
+                card.style.transform = "scale(1)";
+            }, 200);
+
+            document.querySelector('.btn-reveal').innerText = "❤";
+        }
+
+        // Entry Animation
+        window.onload = () => {
+            init();
+            animate();
+            setTimeout(() => {
+                document.getElementById('mainCard').classList.add('show');
+            }, 500);
+        };
+    </script>
+</body>
+</html>
